@@ -12,6 +12,7 @@ import math
 
 from mecha_autoship_interfaces.srv import Battery
 from mecha_autoship_interfaces.srv import Actuator
+from mecha_autoship_interfaces.srv import Color
 
 class MechaAutoshipMcu(Node) :
     def __init__(self) :
@@ -25,6 +26,7 @@ class MechaAutoshipMcu(Node) :
         self.gps_pub_handler = self.create_publisher(NavSatFix, 'gps/data', 10)
 
         self.create_service(Actuator, 'set_actuator', self.actuator_service_callback)
+        self.create_service(Color, 'set_color', self.color_service_callback)
 
         # init serial
         self._serial = serial.Serial('/dev/ttyACM0', 0)
@@ -41,8 +43,13 @@ class MechaAutoshipMcu(Node) :
         self._serial.write('$CD,{0},{1}\n'.format(req.throttle_pwr, req.key_dgr).encode())
         return res
 
+    def color_service_callback(self, req, res):
+        self.get_logger().info('$CL,{0},{1},{2}\n'.format(req.red, req.green, req.blue))
+        self._serial.write('$CL,{0},{1},{2}\n'.format(req.red, req.green, req.blue).encode())
+
     def get_gps_data(self) :
         self._serial.write('$QG\n'.encode())
+
 
     def get_common_data(self) :
         packet_raw = self._serial.readline().split(b'\r')[0].decode("utf-8")
