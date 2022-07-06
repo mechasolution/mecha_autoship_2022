@@ -46,6 +46,7 @@ class MechaAutoshipMcu(Node) :
     def color_service_callback(self, req, res):
         self.get_logger().info('$CL,{0},{1},{2}\n'.format(req.red, req.green, req.blue))
         self._serial.write('$CL,{0},{1},{2}\n'.format(req.red, req.green, req.blue).encode())
+        return res
 
     def get_gps_data(self) :
         self._serial.write('$QG\n'.encode())
