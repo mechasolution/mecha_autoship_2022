@@ -37,6 +37,7 @@ find_package(rosidl_default_generators REQUIRED)
 rosidl_generate_interfaces(${PROJECT_NAME}
   "srv/Actuator.srv"
   "srv/Battery.srv"
+  "srv/Color.srv"
 )
 
 ament_package()
