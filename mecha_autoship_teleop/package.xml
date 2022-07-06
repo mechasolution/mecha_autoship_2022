@@ -2,10 +2,11 @@
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
   <name>mecha_autoship_teleop</name>
-  <version>0.0.0</version>
-  <description>TODO: Package description</description>
-  <maintainer email="max@mechasolution.com">varofla</maintainer>
-  <license>TODO: License declaration</license>
+  <version>0.1.0</version>
+  <description>ROS 2 launch script for starting the mechasolution autoship 2022 project</description>
+  <maintainer email="max@mechasolution.com">Max Cha</maintainer>
+  <license>Apache 2.0</license>
+
 
   <depend>rclpy</depend>
   <depend>joy</depend>

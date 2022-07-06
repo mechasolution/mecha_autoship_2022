@@ -3,9 +3,9 @@
 <package format="3">
   <name>mecha_autoship_interfaces</name>
   <version>0.0.0</version>
-  <description>TODO: Package description</description>
-  <maintainer email="varofla@todo.todo">varofla</maintainer>
-  <license>TODO: License declaration</license>
+  <description>ROS 2 Interface for mechasolution autoship 2022 project</description>
+  <maintainer email="max@mechasolution.com">Max Cha</maintainer>
+  <license>Apache 2.0</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 

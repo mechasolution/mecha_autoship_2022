@@ -19,10 +19,10 @@ setup(
     ],
     install_requires=['setuptools'],
     zip_safe=True,
-    maintainer='mebuntu',
-    maintainer_email='mebuntu@todo.todo',
-    description='TODO: Package description',
-    license='TODO: License declaration',
+    maintainer='Max Cha',
+    maintainer_email='max@mechasolution.com',
+    description='ROS 2 launch script for starting the mechasolution autoship 2022 project',
+    license='Apache 2.0',
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
