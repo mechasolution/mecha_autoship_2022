@@ -1,14 +1,10 @@
-import string
 import rclpy
 from rclpy.node import Node
+from rclpy.qos import QoSProfile
 
 from sensor_msgs.msg import Imu, MagneticField, NavSatFix, NavSatStatus
 
-from rclpy.qos import QoSProfile
-
 import serial
-import numpy as np
-import math
 
 from mecha_autoship_interfaces.srv import Battery
 from mecha_autoship_interfaces.srv import Actuator
@@ -34,7 +30,6 @@ class MechaAutoshipMcu(Node) :
         self._serial.reset_input_buffer()
         self._serial.reset_output_buffer()
 
-        # self.get_factor()
         self.get_common_data_handler = self.create_timer(0.01, self.get_common_data)
         self.get_gps_data_handler = self.create_timer(1, self.get_gps_data)
 
