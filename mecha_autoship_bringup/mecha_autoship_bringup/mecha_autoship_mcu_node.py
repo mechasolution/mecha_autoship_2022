@@ -3,12 +3,10 @@ from rclpy.node import Node
 from rclpy.qos import QoSProfile
 
 from sensor_msgs.msg import Imu, MagneticField, NavSatFix, NavSatStatus
+from mecha_autoship_interfaces.srv import Battery, Actuator, Color
 
 import serial
 
-from mecha_autoship_interfaces.srv import Battery
-from mecha_autoship_interfaces.srv import Actuator
-from mecha_autoship_interfaces.srv import Color
 
 class MechaAutoshipMcu(Node) :
     def __init__(self) :
@@ -34,12 +32,12 @@ class MechaAutoshipMcu(Node) :
         self.get_gps_data_handler = self.create_timer(1, self.get_gps_data)
 
     def actuator_service_callback(self, req, res):
-        self.get_logger().info('$CD,{0},{1}\n'.format(req.throttle_pwr, req.key_dgr))
+        # self.get_logger().info('$CD,{0},{1}\n'.format(req.throttle_pwr, req.key_dgr))
         self._serial.write('$CD,{0},{1}\n'.format(req.throttle_pwr, req.key_dgr).encode())
         return res
 
     def color_service_callback(self, req, res):
-        self.get_logger().info('$CL,{0},{1},{2}\n'.format(req.red, req.green, req.blue))
+        # self.get_logger().info('$CL,{0},{1},{2}\n'.format(req.red, req.green, req.blue))
         self._serial.write('$CL,{0},{1},{2}\n'.format(req.red, req.green, req.blue).encode())
         return res
 
