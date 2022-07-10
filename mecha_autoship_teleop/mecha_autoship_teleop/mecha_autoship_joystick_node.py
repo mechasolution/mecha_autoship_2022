@@ -21,8 +21,8 @@ class MechaAutoshipJoystick(Node) :
     THROTTLE_MAX = 140
 
     # 서보모터 최소, 최대
-    KEY_MIN = 70
-    KEY_MAX = 110
+    KEY_MIN = 55
+    KEY_MAX = 125
 
     def __init__(self) :
         super().__init__('mecha_autoship_joystick')
@@ -62,7 +62,7 @@ class MechaAutoshipJoystick(Node) :
 
         data_actuator = Actuator.Request()
         data_actuator.throttle_pwr = int(map(stick_left_vertical, 0, 1, self.THROTTLE_MIN, self.THROTTLE_MAX))
-        data_actuator.key_dgr = int(map(stick_right_horizontal, -1, 1, 0, 180))
+        data_actuator.key_dgr = int(map(stick_right_horizontal, -1, 1, self.KEY_MIN, self.KEY_MAX))
 
         data_color = Color.Request()
         change_color = button_1 or button_2 or button_3 or button_4
@@ -79,9 +79,9 @@ class MechaAutoshipJoystick(Node) :
             data_color.green = 0
             data_color.blue = 254
         elif button_4 == 1 :
-            data_color.red = 0
-            data_color.green = 0
-            data_color.blue = 0
+            data_color.red = 255
+            data_color.green = 255
+            data_color.blue = 255
 
         self.set_actuator_handler.call_async(data_actuator)
         if change_color == True :
