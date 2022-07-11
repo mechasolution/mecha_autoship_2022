@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
+import os
 
 from launch import LaunchDescription
 from launch_ros.actions import Node
 
-NAMESPACE = 'team_mecha'
+NAMESPACE = os.environ.get('ROS_NAMESPACE', '')
 
 def generate_launch_description():
     # 조이스틱 드라이버 노드

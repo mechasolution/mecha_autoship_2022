@@ -8,7 +8,7 @@ from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, TextSubstitution
 from launch_ros.actions import Node, PushRosNamespace, LifecycleNode
 
-NAMESPACE = 'team_mecha'
+NAMESPACE = os.environ.get('ROS_NAMESPACE', '')
 
 def generate_launch_description():
     # MCU
