@@ -33,7 +33,7 @@ class MechaAutoshipJoystick(Node) :
         self._data_joy = Joy()
         self._is_data = False
 
-        self.create_subscription(Joy, '/joy', self.joy_pub_callback, qos_profile)
+        self.create_subscription(Joy, 'joy', self.joy_pub_callback, qos_profile)
 
         self.set_actuator_handler = self.create_client(Actuator, 'set_actuator')
         self.set_color_handler = self.create_client(Color, 'set_color')
