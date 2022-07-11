@@ -56,9 +56,12 @@ class MechaAutoshipImagePub(Node):
         self.get_logger().info("image_width: %s" % (_image_width))
         self.get_logger().info("image_height: %s" % (_image_height))
 
-        self.publisher_ = self.create_publisher(Image, "Image", 10)
-        timer_period = 0.01  # seconds
-        self.timer = self.create_timer(timer_period, self.timer_callback)
+        self.publisher_ = self.create_publisher(Image, "Image", 1)
+        publish_timer_period = 0.1
+        self.publish_timer = self.create_timer(publish_timer_period, self.publish_timer_callback)
+
+        camera_timer_period = 0.001
+        self.camera_timer = self.create_timer(camera_timer_period, self.camera_timer_callback)
         self.frame_id = "camera"
         self.cap = cv2.VideoCapture(
             gstreamer_pipeline(
@@ -67,18 +70,22 @@ class MechaAutoshipImagePub(Node):
             cv2.CAP_GSTREAMER,
         )
         self.br = CvBridge()
+        self.frame = []
 
-    def timer_callback(self):
-        ret, frame = self.cap.read()
-        if ret:
-            msg = self.br.cv2_to_imgmsg(frame)
+    def publish_timer_callback(self):
+        if len(self.frame) != 0:
+            msg = self.br.cv2_to_imgmsg(self.frame)
             msg.header.frame_id = str(self.frame_id)
             msg.header.stamp = super().get_clock().now().to_msg()
             self.publisher_.publish(msg)
             self.get_logger().info("Publishing video frame")
 
+    def camera_timer_callback(self):
+        ret, frame = self.cap.read()
+        if ret:
+            self.frame = frame
         else:
-            self.get_logger().info("Fail to publishing video frame")
+            self.get_logger().info("Fail to get video frame")
 
 
 def main(args=None):
