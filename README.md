@@ -1,15 +1,16 @@
-# ROS2 Packages for Mechasolution Autoship 2022 Project
+# :ship:ROS2 Packages for Mechasolution Autoship 2022 Project
 2022년 메카솔루션 자율운행선박 프로젝트의 ROS2 패키지입니다.
 
 * 메카솔루션 공식 홈페이지: [바로가기](https://mechasolution.com)
 * 자율운행선박 개시판: [바로가기](https://cafe.naver.com/mechawiki?iframe_url=/ArticleList.nhn%3Fsearch.clubid=29397234%26search.menuid=55)
-
+---
 ## 사전 준비
 mecha_autoship 패키지를 사용하기 위해서는 아래와 같은 환경이 구성되어야 합니다.
 - [Ubuntu 20.04 LTS](https://releases.ubuntu.com/20.04/)가 설치된 PC
 - [Ubuntu 20.04 LTS](https://releases.ubuntu.com/20.04/) 또는 [Xubuntu 20.04](https://forums.developer.nvidia.com/t/xubuntu-20-04-focal-fossa-l4t-r32-3-1-custom-image-for-the-jetson-nano/121768)가 설치된 [Jetson NANO 4GB](https://mechasolution.com/shop/goods/goods_view.php?goodsno=590875&category=), [64gb uSD](https://mechasolution.com/shop/goods/goods_view.php?goodsno=330690&category=)
-- Jetson과 USB로 연결된 조이스틱, [YDLiDAR X4](https://mechasolution.com/shop/goods/goods_view.php?goodsno=592131&category=), [Arduino NANO 33 IoT](https://mechasolution.com/shop/goods/goods_view.php?goodsno=585119&category=)
-- Arduino와 연결된 [QMC5883](https://mechasolution.com/shop/goods/goods_view.php?goodsno=586260&category=), [NEO-6M GPS 모듈](https://mechasolution.com/shop/goods/goods_view.php?goodsno=539611&category=), [서보모터](https://mechasolution.com/shop/goods/goods_view.php?goodsno=594268&category=), ESC, BLDC 추진기
+- Jetson과 USB로 연결된 조이스틱, [YDLiDAR X4](https://mechasolution.com/shop/goods/goods_view.php?goodsno=592131&category=), [Arduino NANO 33 IoT](https://mechasolution.com/shop/goods/goods_view.php?goodsno=585119&category=), [RPi Camera V2](https://mechasolution.com/shop/goods/goods_view.php?goodsno=537776&category=), USB 무선 랜카드
+- Arduino와 연결된 [QMC5883](https://mechasolution.com/shop/goods/goods_view.php?goodsno=586260&category=), [NEO-6M GPS 모듈](https://mechasolution.com/shop/goods/goods_view.php?goodsno=539611&category=), [서보모터](https://mechasolution.com/shop/goods/goods_view.php?goodsno=594268&category=), [WS2812 x 8 LED Ring](https://mechasolution.com/shop/goods/goods_view.php?goodsno=543487&category=), ESC, BLDC 추진기
+---
 ## ROS 패키지 설치 과정 (PC, Jetson 공통)
 본 패키지는 Ubuntu 20.04의 ROS2 Foxy 버전을 지원합니다. `PC 및 로봇 모두` 동일한 설치 과정을 진행해야 합니다.
 ### 1. ROS2 설치 & 워크스페이스 설정
@@ -131,11 +132,102 @@ $ sudo adduser $USER dialout
 ``` bash
 $ sudo reboot now
 ```
-## TODO: OpenCV 설치
+---
+## OpenCV 설치(Jetson)
 Jetson은 OpenCV 설치 과정이 달라 PC와 서로 다른 방법을 사용해야합니다.
-- ### Jetson
-- ### PC
+### 1. CUDA 설치하기
+- ### 현재 설치된 CUDA 버전 확인
+  CUDA가 설치되어 있다면 CUDA 버전, 설치되어 있지 않다면 오류 메세지를 출력합니다.
+  CUDA가 이미 설치되어 있다면 해당 과정을 생략하셔도 괜찮습니다.
+  ```shell
+  $ nvcc --version
+  ```
+- ### CUDA 10.0 설치
+  ```shell
+  $ sudo apt install -y cuda-core-10-0 \
+  cuda-cublas-dev-10-0 \
+  cuda-cudart-dev-10-0 \
+  cuda-libraries-dev-10-0 \
+  cuda-toolkit-10-0
+  ```
+- ### cuDNN 설치
+  ```shell
+  $ sudo apt install libcudnn7-dev
+  ```
+- ### CUDA 설치 확인
+  정상적으로 설치되었다면 /usr/local/ 경로에 cuda-10.0 폴더가 생성됩니다.
+  ```shell
+  $ ls /usr/local/cuda*
+  ```
+- ### 환경변수 설정
+  ```shell
+  $ export PATH=/usr/local/cuda-10.0/bin${PATH:+:${PATH}}
+  $ export LD_LIBRARY_PATH=/usr/local/cuda/lib64${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
+  ```
+- ### gcc version 변경
+  OpenCV는 Jetson에 내장된 gcc 버전과 다른 7버전을 필요로 하기때문에 gcc-7을 별도로 설치한 후 링크해줍니다.
+  ```shell
+  $ sudo apt install gcc-7 g++-7
+  $ sudo ln -s /usr/bin/gcc-7 /usr/local/cuda-10.0/bin/gcc
+  $ sudo ln -s /usr/bin/g++-7 /usr/local/cuda-10.0/bin/g++
+  ```
+### 2. OpenCV 설치하기
+- ### OpenCV 설치 스크립트 다운로드
+  스크립트 다운로드를 위해 git을 설치합니다.
+  ```shell
+  $ sudo apt install git
+  $ git clone https://github.com/kyuhyong/buildOpenCV.git
+  ```
+- ### OpenCV 빌드 옵션 설정
+  다운로드한 스크립트를 실행해 OpenCV 빌드 옵션을 설정합니다.
+  시간이 오래 소요될 수 있습니다.
+  ```shell
+  $ cd buildOpenCV
+  $ ./buildOpenCV.sh |& tee OpenCV_build.log
+  ```
+- ### OpenCV 빌드
+  build 폴더로 이동하여 OpenCV를 빌드합니다.
+  ```shell
+  $ cd ~/opencv/build
+  $ make -j4
+  ```
+- ### OpenCV 설치 확인
+  pkg-config 명령어로 OpenCV가 설치되었는지 확인합니다.
+  설치가 되었을 경우 opencv_version 함수로 설치된 OpenCV의 버전을 확인할 수 있습니다.
+  ```shell
+  $ pkg-config --modversion opencv4
+  $ opencv_version
+  ```
+- ### OpenCV 설치 옵션 확인
+  설치가 확인되었을 경우 파이썬에서 OpenCV를 호출하여 상세 옵션을 확인합니다. OpenCV 옵션에서 Gstreamer가 허용되어 있는지 확인합니다.
+  ```shell
+  $ python3
+  >> import cv2
+  >> print(cv2.getBuildInformation())
+  ```
+  만약 pkg-config 명령어로 OpenCV 설치가 확인되지만, 파이썬에서 import 오류가 발생할 경우 아래의 라이브러리를 추가로 설치합니다.
+  ```shell
+  $ sudo apt install libopencv-dev python3-opencv
+  ```
+## OpenCV 설치(PC)
+OpenCV는 사용하는 PC에 따라 설치 방법이 조금씩 달라질 수 있습니다.
 
+특히, GPU 가속을 돕는 CUDA는 GPU의 유무와 사용중인 CPU가 지원하는 CUDA 버전에 맞춰 설치를 진행해야 합니다.
+
+여기선 GPU를 사용하지 않는 PC에서 OpenCV를 설치하는 방법을 다루겠습니다.
+- ### apt 명령어로 OpenCV 설치
+  ```shell
+  $ sudo apt update
+  $ sudo apt install libopencv-dev python3-opencv
+  ```
+- ### OpenCV 설치 확인
+  OpenCV가 성공적으로 설치되었을 경우 OpenCV의 버전을 출력합니다.
+  ```shell
+  $ python3
+  >> import cv2
+  >> print(cv2.__version__)
+  ```
+---
 ## mecha_autoship 패키지 구성
 mecha_autoship은 아래 패키지로 구성되어 있습니다.
   - ### mecha_autoship_bringup
@@ -147,17 +239,17 @@ mecha_autoship은 아래 패키지로 구성되어 있습니다.
       로봇의 모든 센서와 액추에이터의 기능을 켭니다.
   - ### TODO: mecha_autoship_camera
     - #### <span style="color:#c3e88d">mecha_autoship_filtered_image_sub_node.py \<Node\></span>
-      .
+      Image 타입의 사진과 ROI 타입의 좌표를 Subscribe합니다. 사진에 좌표를 그린 후 화면에 출력합니다.
     - #### <span style="color:#c3e88d">mecha_autoship_image_color_filter_node.py \<Node\></span>
-      .
+      Image 타입의 사진을 Subscribe한 후 색체탐지로 ROI 타입의 사각형 좌표를 생성해 Publishing합니다.
     - #### <span style="color:#c3e88d">mecha_autoship_image_pub_node.py \<Node\></span>
-      .
+      카메라에서 촬영한 사진을 Image 타입으로 변환해 Publishing합니다.
     - #### <span style="color:#c3e88d">mecha_autoship_image_sub_node.py \<Node\></span>
-      .
+      Image 타입의 사진을 Subscribe한 후 화면에 출력합니다.
     - #### <span style="color:#d7ba7d">mecha_autoship_camera_publisher.launch.py \<Launch\></span>
-      .
+      카메라와 색체탐지 기능을 실행합니다.
     - #### <span style="color:#d7ba7d">mecha_autoship_camera_subscriber.launch.py \<Launch\></span>
-      .
+      카메라와 색체탐지 데이터를 시각화합니다.
   - ### mecha_autoship_teleop
     - #### <span style="color:#c3e88d">mecha_autoship_joystick_node.py \<Node\></span>
       조이스틱 데이터를 받아 쓰로틀, 키, RGB LED Service에 Call합니다.
@@ -170,6 +262,7 @@ mecha_autoship은 아래 패키지로 구성되어 있습니다.
       배터리의 잔량을 표현하는 인터페이스입니다.
     - #### <span style="color:#eccdf4">Color.srv \<Interface\></span>
       RGB 스트립의 색상 데이터를 표현하는 인터페이스입니다.
+---
 ## 토픽 구성
 mecha_autoship 패키지에서 출력하는 토픽입니다. 네임스페이스는 생략하였습니다.
 - ### /Image
