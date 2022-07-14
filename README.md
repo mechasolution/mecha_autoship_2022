@@ -4,14 +4,14 @@
 * 메카솔루션 공식 홈페이지: [바로가기](https://mechasolution.com)
 * 자율운행선박 개시판: [바로가기](https://cafe.naver.com/mechawiki?iframe_url=/ArticleList.nhn%3Fsearch.clubid=29397234%26search.menuid=55)
 ---
-## 사전 준비
+## :heavy_check_mark:사전 준비
 mecha_autoship 패키지를 사용하기 위해서는 아래와 같은 환경이 구성되어야 합니다.
 - [Ubuntu 20.04 LTS](https://releases.ubuntu.com/20.04/)가 설치된 PC
 - [Ubuntu 20.04 LTS](https://releases.ubuntu.com/20.04/) 또는 [Xubuntu 20.04](https://forums.developer.nvidia.com/t/xubuntu-20-04-focal-fossa-l4t-r32-3-1-custom-image-for-the-jetson-nano/121768)가 설치된 [Jetson NANO 4GB](https://mechasolution.com/shop/goods/goods_view.php?goodsno=590875&category=), [64gb uSD](https://mechasolution.com/shop/goods/goods_view.php?goodsno=330690&category=)
 - Jetson과 USB로 연결된 조이스틱, [YDLiDAR X4](https://mechasolution.com/shop/goods/goods_view.php?goodsno=592131&category=), [Arduino NANO 33 IoT](https://mechasolution.com/shop/goods/goods_view.php?goodsno=585119&category=), [RPi Camera V2](https://mechasolution.com/shop/goods/goods_view.php?goodsno=537776&category=), USB 무선 랜카드
 - Arduino와 연결된 [QMC5883](https://mechasolution.com/shop/goods/goods_view.php?goodsno=586260&category=), [NEO-6M GPS 모듈](https://mechasolution.com/shop/goods/goods_view.php?goodsno=539611&category=), [서보모터](https://mechasolution.com/shop/goods/goods_view.php?goodsno=594268&category=), [WS2812 x 8 LED Ring](https://mechasolution.com/shop/goods/goods_view.php?goodsno=543487&category=), ESC, BLDC 추진기
 ---
-## ROS 패키지 설치 과정 (PC, Jetson 공통)
+## :rocket:ROS 패키지 설치 과정 (PC, Jetson 공통)
 본 패키지는 Ubuntu 20.04의 ROS2 Foxy 버전을 지원합니다. `PC 및 로봇 모두` 동일한 설치 과정을 진행해야 합니다.
 ### 1. ROS2 설치 & 워크스페이스 설정
 - ### 방법1: 공식 설치 과정
@@ -133,7 +133,7 @@ $ sudo adduser $USER dialout
 $ sudo reboot now
 ```
 ---
-## OpenCV 설치(Jetson)
+## :camera:OpenCV 설치(Jetson)
 Jetson은 OpenCV 설치 과정이 달라 PC와 서로 다른 방법을 사용해야합니다.
 ### 1. CUDA 설치하기
 - ### 현재 설치된 CUDA 버전 확인
@@ -209,7 +209,7 @@ Jetson은 OpenCV 설치 과정이 달라 PC와 서로 다른 방법을 사용해
   ```shell
   $ sudo apt install libopencv-dev python3-opencv
   ```
-## OpenCV 설치(PC)
+## :desktop_computer:OpenCV 설치(PC)
 OpenCV는 사용하는 PC에 따라 설치 방법이 조금씩 달라질 수 있습니다.
 
 특히, GPU 가속을 돕는 CUDA는 GPU의 유무와 사용중인 CPU가 지원하는 CUDA 버전에 맞춰 설치를 진행해야 합니다.
@@ -228,7 +228,7 @@ OpenCV는 사용하는 PC에 따라 설치 방법이 조금씩 달라질 수 있
   >> print(cv2.__version__)
   ```
 ---
-## mecha_autoship 패키지 구성
+## :package:mecha_autoship 패키지 구성
 mecha_autoship은 아래 패키지로 구성되어 있습니다.
   - ### mecha_autoship_bringup
     - #### <span style="color:#c3e88d">mecha_autoship_mcu_node.py \<Node\></span>
@@ -237,7 +237,7 @@ mecha_autoship은 아래 패키지로 구성되어 있습니다.
       YD-LiDAR의 laser 타입 데이터를 PointCloud로 변환해 Publishing합니다.
     - #### <span style="color:#d7ba7d">mecha_autoship_bringup.launch.py \<Launch\></span>
       로봇의 모든 센서와 액추에이터의 기능을 켭니다.
-  - ### TODO: mecha_autoship_camera
+  - ### mecha_autoship_camera
     - #### <span style="color:#c3e88d">mecha_autoship_filtered_image_sub_node.py \<Node\></span>
       Image 타입의 사진과 ROI 타입의 좌표를 Subscribe합니다. 사진에 좌표를 그린 후 화면에 출력합니다.
     - #### <span style="color:#c3e88d">mecha_autoship_image_color_filter_node.py \<Node\></span>
@@ -263,7 +263,7 @@ mecha_autoship은 아래 패키지로 구성되어 있습니다.
     - #### <span style="color:#eccdf4">Color.srv \<Interface\></span>
       RGB 스트립의 색상 데이터를 표현하는 인터페이스입니다.
 ---
-## 토픽 구성
+## :label:토픽 구성
 mecha_autoship 패키지에서 출력하는 토픽입니다. 네임스페이스는 생략하였습니다.
 - ### /Image
 - ### /ROI
