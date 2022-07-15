@@ -1,8 +1,9 @@
 # :ship: ROS2 Packages for Mechasolution Autoship Project
-2022년 메카솔루션 자율운행선박 프로젝트의 ROS2 패키지입니다.
+메카솔루션 자율운행선박 프로젝트의 ROS2 패키지입니다.
 
 * 메카솔루션 공식 홈페이지: [바로가기](https://mechasolution.com)
 * 자율운행선박 개시판: [바로가기](https://cafe.naver.com/mechawiki?iframe_url=/ArticleList.nhn%3Fsearch.clubid=29397234%26search.menuid=55)
+* MCU 펌웨어 및 하드웨어 결선: [바로가기](https://github.com/mechasolution/mecha_autoship_2022-FW)
 ---
 ## :heavy_check_mark: 사전 준비
 mecha_autoship 패키지를 사용하기 위해서는 아래와 같은 환경이 구성되어야 합니다.
@@ -262,6 +263,16 @@ mecha_autoship은 아래 패키지로 구성되어 있습니다.
       배터리의 잔량을 표현하는 인터페이스입니다.
     - #### <span style="color:#eccdf4">Color.srv \<Interface\></span>
       RGB 스트립의 색상 데이터를 표현하는 인터페이스입니다.
+  - ### mecha_autoship_total
+    - #### <span style="color:#c3e88d">mecha_autoship_example_node.py \<Node\></span>
+      간단한 센서 데이터를 수신하고 모터와 LED 링을 제어하는 예시 노드입니다.
+    - #### <span style="color:#d7ba7d">mecha_autoship_example_with_camera.launch.py \<Launch\></span>
+      mecha_autoship 패키지의 모든 기능을 실행합니다. 젯슨에서만 실행 가능하며 아두이노, 라이다, 카메라가 연결되어있어야 합니다. mecha_autoship_camera 패키지의 mecha_autoship_camera_subscriber.launch.py 파일을 실행해 카메라 데이터를 확인할 수 있습니다.
+      ``` bash
+      $ ros2 launch mecha_autoship_camera mecha_autoship_camera_subscriber.launch.py
+      ```
+    - #### <span style="color:#d7ba7d">mecha_autoship_example_without_camera.launch.py \<Launch\></span>
+      카메라를 제외한 mecha_autoship 패키지의 모든 기능을 실행합니다. PC에 아두이노, 라이다를 연결한 후 센서 데이터 디버깅용으로 활용할 수 있습니다.
 ---
 ## :label: 토픽 구성
 mecha_autoship 패키지에서 출력하는 토픽입니다. 네임스페이스는 생략하였습니다.
@@ -274,3 +285,8 @@ mecha_autoship 패키지에서 출력하는 토픽입니다. 네임스페이스�
 - ### /scan
 - ### /scan_points
 - ### /joy
+---
+## :boomerang: 서비스 구성
+mecha_autoship 패키지에서 제공하는 서비스입니다. 네임스페이스는 생략하였습니다.
+- ### /set_actuator
+- ### /set_color
