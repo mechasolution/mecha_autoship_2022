@@ -8,6 +8,10 @@ from rclpy.qos import QoSProfile
 from sensor_msgs.msg import Imu, MagneticField, NavSatFix, NavSatStatus, PointCloud
 from mecha_autoship_interfaces.srv import Battery, Actuator, Color
 
+from sensor_msgs.msg import Image, RegionOfInterest
+import cv2
+from cv_bridge import CvBridge
+
 
 def map(x, input_min, input_max, output_min, output_max):
     res = (x - input_min) * (output_max - output_min) / (
@@ -21,10 +25,14 @@ class MechaAutoshipExampleNode(Node):
         super().__init__("mecha_autoship_example_node")
         self.get_logger().info("mecha_autoship_example_node Start")
 
+        self.br = CvBridge()
+
         self.data = {
             "IMU": Imu(),
             "GPS": NavSatFix(),
             "LiDAR": PointCloud(),
+            "IMAGE": [],
+            "ROI": RegionOfInterest(),
         }
 
         # 센서 데이터 Subscribe
@@ -37,6 +45,12 @@ class MechaAutoshipExampleNode(Node):
         self.lidar_sub_handler = self.create_subscription(
             PointCloud, "scan_points", self.lidar_sub_callback, 10
         )
+        self.image_sub_handler = self.create_subscription(
+            Image, "Image", self.image_sub_callback, 1
+        )
+        self.roi_sub_handler = self.create_subscription(
+            RegionOfInterest, "ROI", self.roi_sub_callback, 10
+        )
 
         # 서비스 Client 생성
         self.actuator_set_handler = self.create_client(Actuator, "set_actuator")
@@ -45,6 +59,9 @@ class MechaAutoshipExampleNode(Node):
         # 특정 토픽으로부터 데이터를 가져오는 예시입니다. 연결되는 콜백 함수를 참고하세요.
         self.print_imu_data_example = self.create_timer(
             5, self.print_imu_data_example_callback
+        )
+        self.show_filtered_image_example = self.create_timer(
+            0.01, self.show_filtered_image_example_callback
         )
 
         # 모터의 쓰로틀을 100%, 각도를 100도로 설정하는 예시입니다.
@@ -66,6 +83,12 @@ class MechaAutoshipExampleNode(Node):
     def lidar_sub_callback(self, data):
         self.data["LiDAR"] = data
 
+    def image_sub_callback(self, data):
+        self.data["IMAGE"] = self.br.imgmsg_to_cv2(data)
+
+    def roi_sub_callback(self, data):
+        self.data["ROI"] = data
+
     def print_imu_data_example_callback(self):
         """특정 토픽으로부터 데이터를 가져오는 예시입니다. 여기서는 imu/data_raw의 orientation 데이터를 출력하고 있습니다."""
         self.get_logger().info("Send imu data example")
@@ -80,6 +103,26 @@ class MechaAutoshipExampleNode(Node):
                 self.data["IMU"].orientation.w,
             )
         )
+
+    def show_filtered_image_example_callback(self):
+        """IMAGE와 ROI 데이터를 가져와 화면에 표시하는 예시입니다."""
+        # self.get_logger().info("Show filtered image example")
+        if len(self.data["IMAGE"]) != 0:
+            filter_image = self.data["IMAGE"]
+
+            if not (self.data["ROI"].x_offset == 0 and self.data["ROI"].y_offset == 0):
+                cv2.rectangle(
+                    filter_image,
+                    (self.data["ROI"].x_offset, self.data["ROI"].y_offset),
+                    (
+                        self.data["ROI"].x_offset + self.data["ROI"].width,
+                        self.data["ROI"].y_offset + self.data["ROI"].height,
+                    ),
+                    (0, 0, 255),
+                    3,
+                )
+            cv2.imshow("filtered image", filter_image)
+            cv2.waitKey(1)
 
     def set_motors(self, bldc_pwr, servo_deg):
         """

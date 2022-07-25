@@ -7,7 +7,11 @@ from cv_bridge import CvBridge
 
 
 def gstreamer_pipeline(
-    sensor_id=0, width=600, height=400, framerate=30, flip_method=0,
+    sensor_id=0,
+    width=600,
+    height=400,
+    framerate=30,
+    flip_method=0,
 ):
     return (
         "nvarguscamerasrc sensor-id=%d !"
@@ -16,7 +20,15 @@ def gstreamer_pipeline(
         "video/x-raw, width=(int)%d, height=(int)%d, format=(string)BGRx ! "
         "videoconvert ! "
         "video/x-raw, format=(string)BGR ! appsink"
-        % (sensor_id, width, height, framerate, flip_method, width, height,)
+        % (
+            sensor_id,
+            width,
+            height,
+            framerate,
+            flip_method,
+            width,
+            height,
+        )
     )
 
 
@@ -58,10 +70,14 @@ class MechaAutoshipImagePub(Node):
 
         self.publisher_ = self.create_publisher(Image, "Image", 1)
         publish_timer_period = 0.1
-        self.publish_timer = self.create_timer(publish_timer_period, self.publish_timer_callback)
+        self.publish_timer = self.create_timer(
+            publish_timer_period, self.publish_timer_callback
+        )
 
         camera_timer_period = 0.001
-        self.camera_timer = self.create_timer(camera_timer_period, self.camera_timer_callback)
+        self.camera_timer = self.create_timer(
+            camera_timer_period, self.camera_timer_callback
+        )
         self.frame_id = "camera"
         self.cap = cv2.VideoCapture(
             gstreamer_pipeline(
@@ -78,7 +94,7 @@ class MechaAutoshipImagePub(Node):
             msg.header.frame_id = str(self.frame_id)
             msg.header.stamp = super().get_clock().now().to_msg()
             self.publisher_.publish(msg)
-            self.get_logger().info("Publishing video frame")
+            # self.get_logger().info("Publishing video frame")
 
     def camera_timer_callback(self):
         ret, frame = self.cap.read()

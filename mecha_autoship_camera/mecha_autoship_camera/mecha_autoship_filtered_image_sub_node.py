@@ -22,9 +22,8 @@ class MechaAutoshipFilteredImageSub(Node):
         self.image = []
         self.br = CvBridge()
 
-
     def roi_listener_callback(self, data):
-        self.get_logger().info("Receiving filter roi")
+        # self.get_logger().info("Receiving filter roi")
         print(data)
         self.roi = [data.x_offset, data.y_offset, data.width, data.height]
         if len(self.image) != 0 and len(self.roi) != 0:
@@ -40,7 +39,7 @@ class MechaAutoshipFilteredImageSub(Node):
             cv2.waitKey(1)
 
     def image_listener_callback(self, data):
-        self.get_logger().info("Receiving frame")
+        # self.get_logger().info("Receiving frame")
         self.image = self.br.imgmsg_to_cv2(data)
         if len(self.image) != 0 and len(self.roi) != 0:
             filter_image = self.image

@@ -77,7 +77,8 @@ class MechaAutoshipImageColorFilter(Node):
         )
         self.filter_min_area = (
             self.get_parameter_or(
-                "filter_min_area", Parameter("filter_min_area", Parameter.Type.INTEGER, 10)
+                "filter_min_area",
+                Parameter("filter_min_area", Parameter.Type.INTEGER, 10),
             )
             .get_parameter_value()
             .integer_value
@@ -119,7 +120,7 @@ class MechaAutoshipImageColorFilter(Node):
         self.origin_img = []
 
     def listener_callback(self, data):
-        self.get_logger().info("Receiving video frame")
+        # self.get_logger().info("Receiving video frame")
         self.origin_img = self.br.imgmsg_to_cv2(data)
 
     def timer_callback(self):
@@ -134,10 +135,10 @@ class MechaAutoshipImageColorFilter(Node):
             roi.y_offset = y
             roi.height = w
             roi.width = h
-            print("###################################################")
-            print(roi)
+            # print("###################################################")
+            # print(roi)
             self.publisher_.publish(roi)
-            self.get_logger().info("Publishing color point")
+            # self.get_logger().info("Publishing color point")
 
     def get_image_by_color(self, img, color):
         hsv_img = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)

@@ -15,7 +15,7 @@ class MechaAutoshipImageSub(Node):
         self.br = CvBridge()
 
     def listener_callback(self, data):
-        self.get_logger().info("Receiving video frame")
+        # self.get_logger().info("Receiving video frame")
         origin_image = self.br.imgmsg_to_cv2(data)
         cv2.imshow("origin image", origin_image)
         cv2.waitKey(1)
