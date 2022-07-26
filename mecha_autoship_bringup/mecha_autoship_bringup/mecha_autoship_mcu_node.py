@@ -97,12 +97,12 @@ class MechaAutoshipMcu(Node) :
 
                 # GPS
                 elif packet_split[0] == '#RG' :
-                    latitude_d = float(str(packet_split[1])[0:3]) # 0000.00000
-                    latitude_m = float(str(packet_split[1])[5:])
+                    latitude_d = float(str(packet_split[1])[0:2]) # 도
+                    latitude_m = float(str(packet_split[1])[2:])  # 분
                     latitude = latitude_d + latitude_m / 60
 
-                    longitude_d = float(str(packet_split[2])[0:4]) # 00000.00000
-                    longitude_m = float(str(packet_split[2])[6:])
+                    longitude_d = float(str(packet_split[2])[0:3]) # 도
+                    longitude_m = float(str(packet_split[2])[3:])  # 분
                     longitude = longitude_d + longitude_m / 60
 
                     status_ = int(packet_split[3])
